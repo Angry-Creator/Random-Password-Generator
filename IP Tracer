@@ -1,0 +1,31 @@
+#Simple Program that traces IP address location. Note that this program wouldn't run except from install the request module, that is if you don't have it. Python Version 3 and above are best suited to run this program.
+from datetime import datetime
+import sys
+import time
+import requests
+
+def trace(*target):
+	url = "http://ip-api.com/json/"
+	if len(target) == 0:
+		target = ""
+	if len(target) <= 15:
+		target = "".join(target)
+		ipUrl = url + target
+		try:
+			source = requests.get(ipUrl)
+			response = eval(source.content.decode("utf-8"))
+			for keyword in response.keys():
+				sys.stdout.write(str(keyword) + ": " + str(response[keyword]) + "\n")
+				sys.stdout.flush()
+				time.sleep(1/10)
+			ipaddress = response['query']
+			currentTime = datetime.now()
+			with open(ipaddress+'.txt', 'w+') as f:
+				f.write(str(response) +  "\nDate : " + str(currentTime.day) + "/" + str(currentTime.month) + "/" + str(currentTime.year) + "\nTime: " + str(currentTime.hour) + "h " + str(currentTime.minute) + "min " + str(currentTime.second) + "sec")
+		except:
+			print("An Error Occured")
+
+#
+
+Ip_address = input("Enter the IP-Address(Leave it empty, to trace your own IP address): ")
+trace(Ip_address)
